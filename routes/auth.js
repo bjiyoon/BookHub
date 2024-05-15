@@ -12,6 +12,7 @@ router.get('/logout', isAuth, authController.logout);
 router.get('/me', isAuth, authController.me);
 router.get('/getuserinfo', authController.getUserInfo);
 router.post('/findid', authController.findUser);
+router.post('/findpw', authController.resetPassword);
 router.post('/update', isAuth, authController.updateUserInfo);
 
 

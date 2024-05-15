@@ -47,4 +47,9 @@ export async function updateUser(userId, newData) {
     return await User.findOneAndUpdate({ userid: userId }, newData, { new: true });
 }
 
+// 해당유저 비밀번호 업데이트
+export async function updateUserPassword(userId, newPassword) {
+    return await User.findOneAndUpdate({ userid: userId }, { userpw: newPassword }, { new: true });
+}
+
 export default User;

@@ -3,6 +3,7 @@ import User from '../models/auth.js';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from '../config.js';
+import { sendOTP, verifyOTP } from './otp.js';
 
 
 function createJwtToken(userid) {
@@ -126,6 +127,30 @@ export async function updateUserInfo(req, res, next) {
     }
 }
 // ----------------------------------------------------------------------------------------------------------------
+export async function resetPassword(req, res, next) {
+    const userId = req.body.userid;
+    const hp = req.body.hp;
+    const newPassword = req.body.newPassword;
+    const otp = req.body.otp;
+
+    try {
+        // sendOTP(hp, otp);
+        const isOtpValid = await verifyOTP(hp, otp);
+        console.log('hp, otp: ', hp, otp);
+        if (!isOtpValid) {
+            return res.status(400).json({ message: 'OTP 인증 실패' });
+        };
+        const hashedPassword = await bcrypt.hash(newPassword, config.bcrypt.saltRounds);
+        await authRepository.updateUserPassword(userId, { userpw: hashedPassword });
+        console.log('hashed pw: ', hashedPassword);
+        res.status(200).json({ message: '비밀번호 변경 성공' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: '서버 에러' });
+    };
+
+};
+// ----------------------------------------------------------------------------------------------------------------
 export async function logout(req, res, next) {
     res.clearCookie('token');
     res.status(200).json({ message: '로그아웃 성공' });
@@ -154,3 +179,4 @@ export async function checkPassword(req, res, next) {
     const user = await authRepository.findByuserid(userid);
     console.log(user);
 }
+// ----------------------------------------------------------------------------------------------------------------
