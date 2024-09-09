@@ -14,7 +14,7 @@
 - AWS
 * * *
 
-### 💠 Responsibilities 💠
+### 💠 Role 💠
 - Frontend Development
 - Backend server setup
 * * *
